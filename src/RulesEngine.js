@@ -2,7 +2,7 @@ import _ from 'underscore';
 import events from 'events';
 import { ROT } from 'rot-js';
 import Player from 'Player';
-import sightMap from 'SightMap';
+import * as sightMap from 'SightMap';
 
 let entityIdCounter = 0;
 
