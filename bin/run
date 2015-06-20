@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "$1" = "-s" ]; then
+  silent=true
+  shift
+fi
+
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+for command in $@; do
+  echo -e "run ${RED}${command}${NC}";
+  if [ -z $silent ]; then
+    npm run $command;
+  else
+    npm run -s $command;
+  fi
+  echo -e "done ${RED}${command}${NC}";
+done

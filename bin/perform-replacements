@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+/*eslint-disable*/
+var fs = require("fs");
+var replace = require("replace");
+
+var packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+var REPLACEMENTS = packageJson.config;
+
+var searchPath = process.argv[2] || "out";
+
+Object.keys(REPLACEMENTS).forEach( function(key) {
+  var searchString = "__" + key + "__";
+  var replacement = REPLACEMENTS[key];
+
+  replace({
+    regex: searchString,
+    replacement: replacement,
+    paths: [searchPath],
+    recursive: true,
+    silent: false,
+  });
+});

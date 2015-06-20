@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ "$1" = "-s" ]; then
+  silent=true
+  shift
+fi
+
+for command in $@; do
+  if [ -z $silent ]; then
+    parallel_commands="${parallel_commands} 'bin/run ${command}'";
+  else
+    parallel_commands="${parallel_commands} 'bin/run -s ${command}'";
+  fi
+done
+
+command="bin/exec parallelshell ${parallel_commands}"
+sh -c "${command}"

@@ -1,0 +1,62 @@
+{
+  "name": "roguelike2",
+  "version": "1.0.0",
+  "engines": {
+    "node": "~0.12"
+  },
+  "description": "A roguelike",
+  "config": {
+    "less_input_file": "main.less",
+    "css_output_file": "main.css",
+    "js_input_file": "main.js",
+    "js_output_file": "bundle.js"
+  },
+  "scripts": {
+    "perform-replacements": "bin/perform-replacements",
+    "echo-env": "env",
+    "browser-sync": "bin/exec browser-sync start --config browser-sync-config.js",
+    "build": "bin/run-parallel build-css build-js build-html build-assets",
+    "build-assets": "mkdir -p .tmp-assets && cp -r src/assets/* .tmp-assets/ && mv .tmp-assets/* out/",
+    "build-css": "bin/exec lessc --source-map-less-inline --source-map-map-inline --source-map-rootpath=/ --source-map-basepath=$(pwd -P)/src --include-path=lib:node_modules src/${npm_package_config_less_input_file} > .tmp/${npm_package_config_css_output_file} && mv .tmp/${npm_package_config_css_output_file} out/${npm_package_config_css_output_file}",
+    "build-html": "cp src/*.html .tmp/ && bin/perform-replacements .tmp/ && cp .tmp/*.html out/",
+    "build-js": "NODE_PATH=$NODE_PATH:lib:src bin/exec browserify --debug -t [babelify] src/${npm_package_config_js_input_file} -o out/${npm_package_config_js_output_file}",
+    "clean": "rm -rf out",
+    "lint-js": "bin/exec eslint src",
+    "mkdir": "mkdir -p out .tmp",
+    "prebuild": "bin/run clean mkdir",
+    "serve": "bin/run prebuild && bin/run-parallel -s 'browser-sync' 'watch'",
+    "test": "bin/run lint-js",
+    "watch": "bin/run-parallel -s watch-css watch-js watch-html watch-assets",
+    "watch-assets": "bin/exec nodemon -q -w src/assets --ext '*' --exec 'bin/run build-assets'",
+    "watch-css": "bin/exec nodemon -q -w src -w lib/bower_components --ext 'css,less' --exec 'bin/run build-css'",
+    "watch-html": "bin/exec nodemon -q -w src --ext 'html' --exec 'bin/run build-html'",
+    "watch-js": "NODE_PATH=$NODE_PATH:lib:src bin/exec watchify --verbose --debug -t [babelify --sourceMapRelative src] src/${npm_package_config_js_input_file} -o out/${npm_package_config_js_output_file}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:wmadden/roguelike2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wmadden/roguelike2/issues"
+  },
+  "homepage": "https://github.com/wmadden/roguelike2",
+  "dependencies": {
+    "babel-eslint": "^3.1.8",
+    "babelify": "^6.1.0",
+    "browser-sync": "^2.7.1",
+    "browserify": "^10.1.3",
+    "classnames": "^2.1.2",
+    "eslint": "^0.21.0",
+    "eslint-plugin-react": "^2.3.0",
+    "flux": "^2.0.3",
+    "less": "^2.5.0",
+    "nodemon": "^1.3.7",
+    "parallelshell": "^1.1.1",
+    "pixi.js": "^2.1.1",
+    "react": "^0.13.2",
+    "replace": "^0.3.0",
+    "rot-js": "^0.5.2",
+    "underscore": "^1.8.3",
+    "watchify": "^3.2.1"
+  }
+}
